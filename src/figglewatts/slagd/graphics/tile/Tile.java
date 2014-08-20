@@ -30,6 +30,7 @@ public class Tile {
 	 * @return TextureRegion of the tile
 	 */
 	public static TextureRegion getSourceRectangle(int tileIndex, int sheetIndex) {
+		
 		if (TILE_WIDTH == -1 || TILE_HEIGHT == -1) {
 			System.out.println("Cannot create source rectangle, TILE_WIDTH or TILE_HEIGHT have not been set.");
 			return null;
@@ -38,9 +39,10 @@ public class Tile {
 		int tileX = 0; // x position of the tile in tiles
 		
 		if (TILESET_TEXTURES.get(sheetIndex) != null) {
-			tileY = tileIndex / (TILESET_TEXTURES.get(sheetIndex).getHeight() / TILE_HEIGHT);
+			tileY = tileIndex / (TILESET_TEXTURES.get(sheetIndex).getWidth() / TILE_HEIGHT);
 			tileX = tileIndex % (TILESET_TEXTURES.get(sheetIndex).getWidth() / TILE_WIDTH);
 		}
-		return new TextureRegion(TILESET_TEXTURES.get(tileIndex), tileX * TILE_WIDTH, tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
+		return new TextureRegion(TILESET_TEXTURES.get(sheetIndex), tileX * TILE_WIDTH, tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 	}
 }
