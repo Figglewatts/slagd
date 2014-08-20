@@ -102,12 +102,29 @@ public class MapCell {
 		setTileInList(0, tile);
 	}
 	/**
+	 * Sets the tile on layer 0
+	 * @param tileID
+	 * @param sheetID
+	 */
+	public void setTile(int tileID, int sheetID) {
+		setTileInList(0, new BaseTile(tileID, sheetID));
+	}
+	/**
 	 * Sets the tile on a given layer
 	 * @param tile BaseTile instance
 	 * @param layer layer to set
 	 */
 	public void setTile(BaseTile tile, int layer) {
 		setTileInList(layer, tile);
+	}
+	/**
+	 * Sets the tile on a given layer
+	 * @param tileID
+	 * @param sheetID
+	 * @param layer
+	 */
+	public void setTile(int tileID, int sheetID, int layer) {
+		setTileInList(layer, new BaseTile(tileID, sheetID));
 	}
 	
 	/**
@@ -162,6 +179,16 @@ public class MapCell {
 		this.setTilePos(x, y);
 	}
 	/**
+	 * Create a map cell at a given position with a given tile
+	 * @param x
+	 * @param y
+	 * @param tile
+	 */
+	public MapCell(int x, int y, BaseTile tile) {
+		this.setTilePos(x, y);
+		this.setTile(tile);
+	}
+	/**
 	 * Create a map cell with specified tile and sheet IDs at a given position
 	 * @param x
 	 * @param y
@@ -170,8 +197,7 @@ public class MapCell {
 	 */
 	public MapCell(int x, int y, int tileID, int sheetID) {
 		this.setTilePos(x, y);
-		this.setTileID(tileID);
-		this.setSheetID(sheetID);
+		this.setTile(new BaseTile(tileID, sheetID));
 	}
 	/**
 	 * Create a map cell with specified tile and sheet IDs at a given position on a given layer
@@ -183,7 +209,6 @@ public class MapCell {
 	 */
 	public MapCell(int x, int y, int tileID, int sheetID, int layer) {
 		this.setTilePos(x, y);
-		this.setTileID(tileID, layer);
-		this.setSheetID(sheetID, layer);
+		this.setTile(new BaseTile(tileID, sheetID), layer);
 	}
 }
