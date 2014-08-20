@@ -1,17 +1,23 @@
 package figglewatts.slagd.graphics.tile;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.*;
 
 import figglewatts.slagd.Settings;
 
 public class TileMap {
+	/**
+	 * A 2-dimensional array containing information about each map cell
+	 */
 	public MapCell[][] Cells;
-	public BoundingBox[] EdgeBounds = new BoundingBox[4];
 	
 	private int mapWidth;
 	private int mapHeight;
@@ -30,7 +36,6 @@ public class TileMap {
 		for (int y = 0; y < mapHeight; y++) {
 			for (int x = 0; x < mapWidth; x++) {
 				this.Cells[y][x] = new MapCell(x, y, tile);
-				//System.out.println("Cell at: " + x + ", " + y + " is : " + this.Cells[y][x]);
 			}
 		}
 	}
@@ -102,9 +107,20 @@ public class TileMap {
 		this.Cells[y][x].setTile(tile, layer);
 	}
 	
+	/**
+	 * Converts a world position (in pixels) to a tile position (in tiles)
+	 * @param worldPos
+	 * @return A vector2 containing the given point's position in tiles
+	 */
 	public Vector2 worldPosToTilePos(Vector2 worldPos) {
 		return new Vector2((float)Math.floor(worldPos.x / Tile.TILE_WIDTH), (float)Math.floor(worldPos.y / Tile.TILE_HEIGHT)); 
 	}
+	/**
+	 * Converts a world position (in pixels) to a tile position (in tiles)
+	 * @param x
+	 * @param y
+	 * @return A vector2 containing the given point's position in tiles
+	 */
 	public Vector2 worldPosToTilePos(int x, int y) {
 		return new Vector2((float)Math.floor(x / Tile.TILE_WIDTH), (float)Math.floor(y / Tile.TILE_HEIGHT));
 	}
@@ -138,10 +154,73 @@ public class TileMap {
 		}
 	}
 	
+	/**
+	 * Create a tile map with given width and height, and fill it with tile 0 from sprite sheet 0
+	 * @param width
+	 * @param height
+	 */
 	public TileMap(int width, int height) {
 		this.Cells = new MapCell[height][width];
 		this.mapWidth = width;
 		this.mapHeight = height;
 		fillWithTile(0, 0);
+	}
+	
+	public TileMap(String xmlInput, String pathToTilesheets) {
+		if (pathToTilesheets != "") {
+			pathToTilesheets += "/";
+		}
+		XmlReader reader = new XmlReader();
+		Element mapData = reader.parse(xmlInput);
+		this.mapWidth = Integer.parseInt(mapData.getAttribute("width"));
+		this.mapHeight = Integer.parseInt(mapData.getAttribute("height"));
+		this.Cells = new MapCell[this.mapHeight][this.mapWidth];
+		Tile.TILE_WIDTH = Integer.parseInt(mapData.getAttribute("tilewidth"));
+		Tile.TILE_HEIGHT = Integer.parseInt(mapData.getAttribute("tileheight"));
+		Array<Element> tileSets = mapData.getChildrenByName("tileset");
+		Array<Integer> firstGid = new Array<Integer>();
+		for (Element tileSet : tileSets) {
+			String source = tileSet.getChildByName("image").getAttribute("source");
+			Tile.addTilesheet(new Texture(Gdx.files.internal(pathToTilesheets + source)));
+			firstGid.add(Integer.parseInt(tileSet.getAttribute("firstgid")));
+		}
+		
+		Array<Element> layers = mapData.getChildrenByName("layer");
+		int layerIndex = 0;
+		for (Element layer : layers) {
+			Array<Element> tiles = layer.getChildByName("data").getChildrenByName("tile");
+			int i = 0;
+			int tileSheetIndex = 0;
+			for (int y = this.mapHeight-1; y >= 0; y--) {
+				for (int x = 0; x < this.mapWidth; x++) {
+					// get tile id
+					int gid = Integer.parseInt(tiles.get(i).getAttribute("gid"));
+					
+					
+					
+					// calculate which tilesheet it's on and normalize gid
+					for (int k = 0; k < firstGid.size; k++) { 
+						tileSheetIndex = k;
+						if (k != firstGid.size - 1) {
+							if (gid >= firstGid.get(k) && gid < firstGid.get(k+1)) {
+								//tileSheetIndex = k;
+								gid -= firstGid.get(k);
+								break;
+							} else {
+								continue;
+							}
+						} else {
+							System.out.println("TSI:" + tileSheetIndex);
+							gid -= firstGid.get(k);
+							System.out.println("GID:" + gid);
+							break;
+						}
+					}
+					this.Cells[y][x] = new MapCell(x, y, gid, tileSheetIndex, layerIndex);
+					i++;
+				}
+			}
+			layerIndex++;
+		}
 	}
 }
