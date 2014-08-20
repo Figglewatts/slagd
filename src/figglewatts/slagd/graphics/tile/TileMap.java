@@ -1,6 +1,7 @@
 package figglewatts.slagd.graphics.tile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,11 @@ import com.badlogic.gdx.utils.XmlReader.*;
 
 import figglewatts.slagd.Settings;
 
+/**
+ * A class to represent a map of tiles. Contains methods to manipulate tiles.
+ * @author Figglewatts
+ *
+ */
 public class TileMap {
 	/**
 	 * A 2-dimensional array containing information about each map cell
@@ -166,6 +172,11 @@ public class TileMap {
 		fillWithTile(0, 0);
 	}
 	
+	/**
+	 * Create a tile map from a .tmx file from the program Tiled
+	 * @param xmlInput The XML string to deserialize (.tmx file string)
+	 * @param pathToTilesheets The path to the folder in /assets where the tilesheets are kept
+	 */
 	public TileMap(String xmlInput, String pathToTilesheets) {
 		if (pathToTilesheets != "") {
 			pathToTilesheets += "/";
@@ -195,24 +206,21 @@ public class TileMap {
 				for (int x = 0; x < this.mapWidth; x++) {
 					// get tile id
 					int gid = Integer.parseInt(tiles.get(i).getAttribute("gid"));
-					
-					
-					
+
 					// calculate which tilesheet it's on and normalize gid
 					for (int k = 0; k < firstGid.size; k++) { 
 						tileSheetIndex = k;
+						// if it's not the last tilesheet
 						if (k != firstGid.size - 1) {
+							// if it's between the start ID of this and the start ID of the next tilesheet
 							if (gid >= firstGid.get(k) && gid < firstGid.get(k+1)) {
-								//tileSheetIndex = k;
-								gid -= firstGid.get(k);
+								gid -= firstGid.get(k); // calculate correct ID
 								break;
 							} else {
 								continue;
 							}
 						} else {
-							System.out.println("TSI:" + tileSheetIndex);
 							gid -= firstGid.get(k);
-							System.out.println("GID:" + gid);
 							break;
 						}
 					}
@@ -222,5 +230,14 @@ public class TileMap {
 			}
 			layerIndex++;
 		}
+	}
+	
+	/**
+	 * Create a tile map from a .tmx file from the program Tiled
+	 * @param tmx The FileHandle of the .tmx file
+	 * @param pathToTilesheets The path to the folder in /assets where the tilesheets are kept
+	 */
+	public TileMap(FileHandle tmx, String pathToTilesheets) {
+		this(tmx.readString(), pathToTilesheets);
 	}
 }
