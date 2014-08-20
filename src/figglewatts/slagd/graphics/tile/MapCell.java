@@ -211,4 +211,15 @@ public class MapCell {
 		this.setTilePos(x, y);
 		this.setTile(new BaseTile(tileID, sheetID), layer);
 	}
+	/**
+	 * Create a map cell with specified tile and sheet IDs at a given position on a given layer
+	 * @param x
+	 * @param y
+	 * @param tile
+	 * @param layer
+	 */
+	public MapCell(int x, int y, BaseTile tile, int layer) {
+		this.setTilePos(x, y);
+		this.setTile(tile, layer);
+	}
 }
