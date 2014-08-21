@@ -13,8 +13,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  * @author Figglewatts
  *
  */
-public class Font {
-	private Font() { }
+public class SlagdFont {
+	private SlagdFont() { }
 	
 	private static FreeTypeFontGenerator generator;
 	private static FreeTypeFontParameter parameter = new FreeTypeFontParameter();
