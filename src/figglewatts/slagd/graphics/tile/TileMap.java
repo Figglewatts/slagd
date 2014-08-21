@@ -188,6 +188,7 @@ public class TileMap {
 		this.Cells = new MapCell[this.mapHeight][this.mapWidth];
 		Tile.TILE_WIDTH = Integer.parseInt(mapData.getAttribute("tilewidth"));
 		Tile.TILE_HEIGHT = Integer.parseInt(mapData.getAttribute("tileheight"));
+		fillWithTile(0, 0);
 		Array<Element> tileSets = mapData.getChildrenByName("tileset");
 		Array<Integer> firstGid = new Array<Integer>();
 		for (Element tileSet : tileSets) {
@@ -206,7 +207,12 @@ public class TileMap {
 				for (int x = 0; x < this.mapWidth; x++) {
 					// get tile id
 					int gid = Integer.parseInt(tiles.get(i).getAttribute("gid"));
-
+					
+					if (gid == 0) {
+						i++;
+						continue; // tile is nonexistent
+					}
+					
 					// calculate which tilesheet it's on and normalize gid
 					for (int k = 0; k < firstGid.size; k++) { 
 						tileSheetIndex = k;
@@ -224,7 +230,7 @@ public class TileMap {
 							break;
 						}
 					}
-					this.Cells[y][x] = new MapCell(x, y, gid, tileSheetIndex, layerIndex);
+					this.Cells[y][x].setTile(new BaseTile(gid, tileSheetIndex), layerIndex);
 					i++;
 				}
 			}
