@@ -65,6 +65,11 @@ public class SceneManager<T extends ApplicationAdapter> {
 			item.unload();
 		}
 	}
+	
+	public void switchScene(final Scene<T> scene) {
+		removeScene(currentScenes.get(0));
+		addScene(scene);
+	}
 }
 
 
