@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import figglewatts.slagd.scenes.SceneManager;
-
 public abstract class SlagdAdapter extends ApplicationAdapter {
 	
 	// RENDERING
@@ -72,7 +70,7 @@ public abstract class SlagdAdapter extends ApplicationAdapter {
 		// then upscale the framebuffer and draw it on screen
 		Gdx.gl.glViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
 		fboBatch.begin();
-		Gdx.gl.glClearColor(0.392F, 0.584F, 0.929F, 1F);
+		Gdx.gl.glClearColor(0, 0, 0, 1F);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		fboBatch.draw(fbo.getColorBufferTexture(), 0, 0, w, h, 0, 0, 1, 1);
 		fboBatch.end();
