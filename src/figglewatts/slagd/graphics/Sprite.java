@@ -12,6 +12,7 @@ public class Sprite {
 	private Vector2 centre;
 	private int width;
 	private int height;
+	private float rotation;
 
 	public Texture getTexture() {
 		return this.texture;
@@ -35,6 +36,7 @@ public class Sprite {
 		this.position = new Vector2(x, y);
 	}
 	public Vector2 getCentre() {
+		this.setCentre(new Vector2(this.position.x + (this.width/2), this.position.y + (this.height/2)));
 		return this.centre;
 	}
 	public void setCentre(Vector2 centre) {
@@ -65,6 +67,12 @@ public class Sprite {
 		this.position.y = y;
 	}
 	
+	public float getRotation() {
+		return rotation;
+	}
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
 	/**
 	 * Create a sprite.
 	 * @param x X position
@@ -81,6 +89,7 @@ public class Sprite {
 		this.setHeight(h);
 		this.setCentre(new Vector2(x + (w/2), y + (h/2)));
 		this.setTexture(texture);
+		this.setDrawCol(Color.WHITE);
 	}
 	
 	/**
@@ -92,8 +101,12 @@ public class Sprite {
 		this.position.x += x;
 		this.position.y += y;
 	}
+	public void moveBy(float x, float y) {
+		this.position.x += x;
+		this.position.y += y;
+	}
 	
-	public void render(SpriteBatch batch) {
+	public void Draw(SpriteBatch batch) {
 		Color cachedColor = batch.getColor();
 		batch.setColor(this.drawCol);
 		batch.draw(this.texture, this.position.x, this.position.y, this.width, this.height);

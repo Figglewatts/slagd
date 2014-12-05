@@ -162,19 +162,17 @@ public class AnimatedSprite extends Sprite
 	 * Draws the sprite using a SpriteBatch along wth an x offset and a y offset.
 	 * @param batch The SpriteBatch to use.
 	 */
+	@Override
 	public void Draw(SpriteBatch batch)
 	{
 		if(animating)
 		{
+			
 			batch.setColor(this.getDrawCol());
 			batch.draw(this.getTexture(), this.getXPos(), this.getYPos(),
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().width,
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().height,
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().x,
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().y,
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().width,
-					(int)this.getCurrentFrameAnimation().getFrameRectangle().height,
-					false, true);
+					16, 16, (int)this.getCurrentFrameAnimation().getFrameRectangle().width, (int)this.getCurrentFrameAnimation().getFrameRectangle().height,
+					1, 1, this.getRotation(), (int)this.getCurrentFrameAnimation().getFrameRectangle().x, (int)this.getCurrentFrameAnimation().getFrameRectangle().y,
+					(int)this.getCurrentFrameAnimation().getFrameRectangle().width, (int)this.getCurrentFrameAnimation().getFrameRectangle().height, false, false);
 		}
 	}
 }
