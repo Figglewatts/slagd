@@ -1,5 +1,8 @@
 package figglewatts.slagd.graphics.tile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,6 +27,8 @@ public class TileMap {
 	 * A 2-dimensional array containing information about each map cell
 	 */
 	public MapCell[][] Cells;
+	
+	public List<TiledObject> Objects = new ArrayList<TiledObject>();
 	
 	private int mapWidth;
 	private int mapHeight;
@@ -235,6 +240,38 @@ public class TileMap {
 				}
 			}
 			layerIndex++;
+		}
+		
+		Array<Element> objectLayers = mapData.getChildrenByName("objectgroup");
+		for (Element oLayer : objectLayers) {
+			Array<Element> objects = oLayer.getChildrenByName("object");
+			for (Element object : objects) {
+				TiledObject objInstance = new TiledObject();
+				objInstance.setName(object.getAttribute("name"));
+				
+				for (String attr : object.getAttributes().keys()) {
+					switch (attr) {
+					case "x":
+						objInstance.setxPos(Integer.parseInt(object.getAttribute("x")));
+						break;
+					case "y":
+						objInstance.setyPos(Integer.parseInt(object.getAttribute("y")));
+						break;
+					case "width":
+						objInstance.setWidth(Integer.parseInt(object.getAttribute("width")));
+						break;
+					case "height":
+						objInstance.setHeight(Integer.parseInt(object.getAttribute("height")));
+						break;
+					}
+				}
+				
+				Array<Element> properties = object.getChildByName("properties").getChildrenByName("property");
+				for (Element property : properties) {
+					objInstance.addProperty(property.getAttribute("name"), property.getAttribute("value"));
+				}
+				Objects.add(objInstance);
+			}
 		}
 	}
 	
